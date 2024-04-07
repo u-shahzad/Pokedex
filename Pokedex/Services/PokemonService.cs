@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Pokedex.DM;
+using System.Text.RegularExpressions;
 
 namespace Pokedex.Services
 {
@@ -23,16 +24,34 @@ namespace Pokedex.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = response.Content.ReadAsStringAsync().Result;
-
                     var dynamicObject = JsonConvert.DeserializeObject<dynamic>(responseContent)!;
+                    Pokemon pokemon = new Pokemon();
 
-                    var pokemon = new Pokemon()
+                    if (dynamicObject != null)
                     {
-                        Name = dynamicObject.name,
-                        Description = dynamicObject.flavor_text_entries[0].flavor_text,
-                        Habitat = dynamicObject.habitat.name,
-                        IsLegendary = dynamicObject.is_legendary
-                    };
+                        pokemon.Name = dynamicObject.name ?? "";
+
+                        // Search and get Pokemon description in English language
+                        foreach (var obj in dynamicObject.flavor_text_entries)
+                        {
+                            string languageName = obj.language.name ?? "";
+                            if (languageName.Equals("en"))
+                            {
+                                string description = obj.flavor_text ?? "";
+                                pokemon.Description = description.Replace("\n", " ").Replace("\f", " ");
+                                break;
+                            }
+                        }
+
+                        var habitat = dynamicObject.habitat;
+
+                        if (habitat != null)
+                        {
+                            pokemon.Habitat = habitat.name ?? "";
+                        }
+
+                        pokemon.IsLegendary = dynamicObject.is_legendary ?? "";
+                    }
 
                     return pokemon;
                 }
