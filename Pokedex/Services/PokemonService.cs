@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Pokedex.DM;
-using System.Text.RegularExpressions;
 
 namespace Pokedex.Services
 {
@@ -15,12 +14,11 @@ namespace Pokedex.Services
 
         public Pokemon GetPokemonInfo(string pokemonName)
         {
-            _httpClient.BaseAddress = new Uri($"https://pokeapi.co/api/v2/pokemon-species/{pokemonName.ToLower()}/");
-
-            var response = _httpClient.GetAsync(_httpClient.BaseAddress).Result;
-
             try
             {
+                _httpClient.BaseAddress = new Uri($"https://pokeapi.co/api/v2/pokemon-species/{pokemonName.ToLower()}/");
+                var response = _httpClient.GetAsync(_httpClient.BaseAddress).Result;
+
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = response.Content.ReadAsStringAsync().Result;
@@ -46,9 +44,9 @@ namespace Pokedex.Services
                         var habitat = dynamicObject.habitat;
 
                         if (habitat != null)
-                        {
                             pokemon.Habitat = habitat.name ?? "";
-                        }
+                        else
+                            pokemon.Habitat = "";
 
                         pokemon.IsLegendary = dynamicObject.is_legendary ?? "";
                     }
