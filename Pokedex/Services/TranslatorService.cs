@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Pokedex.DM;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Pokedex.Services
 {
@@ -17,9 +16,6 @@ namespace Pokedex.Services
         {
             try
             {
-                //PokemonService _pokemonService = new PokemonService(new HttpClient());
-                //Pokemon pokemon = _pokemonService.GetPokemonInfo(pokemonName);
-
                 var translator = pokemon.Habitat.ToLower() == "cave" || pokemon.IsLegendary ? "yoda" : "shakespeare";
 
                 _httpClient.BaseAddress = new Uri($"https://api.funtranslations.com/translate/{translator}.json?text={pokemon.Description}");
