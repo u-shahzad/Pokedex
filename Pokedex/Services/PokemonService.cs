@@ -16,6 +16,11 @@ namespace Pokedex.Services
         {
             try
             {
+                /*
+                    For the production environment, we can save the BaseUri as a key in a web.config file
+                    and obtain the value using System.Configuration.ConfigurationManager
+                */
+
                 _httpClient.BaseAddress = new Uri($"https://pokeapi.co/api/v2/pokemon-species/{pokemonName.ToLower()}/");
                 var response = _httpClient.GetAsync(_httpClient.BaseAddress).Result;
 
