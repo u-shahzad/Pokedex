@@ -41,7 +41,7 @@ To run the project, follow these steps:
     
 2. **Run the Docker Container**: After successfully building the Docker image, you can run it using the following command:
    ```bash
-    docker run --rm -p 5000:5000 -p 5001:5001 -e ASPNETCORE_HTTP_PORT=https://+:5001 -e ASPNETCORE_URLS=https://+:5000 pokedex
+    docker run --rm -p 5000:5000 -p 5001:5001 -e ASPNETCORE_HTTP_PORT=https://+:5001 -e ASPNETCORE_URLS=http://+:5000 pokedex
     ```
    
 4. **Access the API**: Once the container is running, you can access the API by sending HTTP requests to `http://localhost:5000`
