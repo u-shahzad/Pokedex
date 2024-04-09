@@ -16,22 +16,25 @@ namespace Pokedex.Services
         {
             try
             {
-                /*
-                    For the production environment, we can save the BaseUri as a key in a web.config file
-                    and obtain the value using System.Configuration.ConfigurationManager
-                */
-
+                // For the production environment, we can save the BaseUri as a key in a web.config or appsettings.json file
                 _httpClient.BaseAddress = new Uri($"https://pokeapi.co/api/v2/pokemon-species/{pokemonName.ToLower()}/");
+
+                // Call PokéAPI
                 var response = _httpClient.GetAsync(_httpClient.BaseAddress).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
+                    // Get response content as a JSON string
                     var responseContent = response.Content.ReadAsStringAsync().Result;
+
+                    // Deserialize JSON string into Dynamic Object
                     var dynamicObject = JsonConvert.DeserializeObject<dynamic>(responseContent)!;
+
                     Pokemon pokemon = new Pokemon();
 
                     if (dynamicObject != null)
                     {
+                        // Get Pokemon name
                         pokemon.Name = dynamicObject.name ?? "";
 
                         // Search and get Pokemon description in English language
@@ -48,11 +51,13 @@ namespace Pokedex.Services
 
                         var habitat = dynamicObject.habitat;
 
+                        // Habitat
                         if (habitat != null)
                             pokemon.Habitat = habitat.name ?? "";
                         else
                             pokemon.Habitat = "";
 
+                        // IsLegendary
                         pokemon.IsLegendary = dynamicObject.is_legendary ?? "";
                     }
 
