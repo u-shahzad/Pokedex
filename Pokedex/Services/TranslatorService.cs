@@ -12,7 +12,7 @@ namespace Pokedex.Services
             _httpClient = httpClient;
         }
 
-        public Pokemon GetTranslatedPokemonInfo(Pokemon pokemon)
+        public async Task<Pokemon> GetTranslatedPokemonInfo(Pokemon pokemon)
         {
             try
             {
@@ -22,10 +22,10 @@ namespace Pokedex.Services
                 _httpClient.BaseAddress = new Uri($"https://api.funtranslations.com/translate/{translator}.json?text={pokemon.Description}");
 
                 // Call FunTranslations API
-                var response = _httpClient.GetAsync(_httpClient.BaseAddress).Result;
+                var response = await _httpClient.GetAsync(_httpClient.BaseAddress);
 
                 // Get response content as a JSON string
-                var responseContent = response.Content.ReadAsStringAsync().Result;
+                var responseContent = await response.Content.ReadAsStringAsync();
 
                 // Deserialize JSON string into Dynamic Object
                 var dynamicObject = JsonConvert.DeserializeObject<dynamic>(responseContent)!;

@@ -12,7 +12,7 @@ namespace Pokedex.Services
             _httpClient = httpClient;
         }
 
-        public Pokemon GetPokemonInfo(string pokemonName)
+        public async Task<Pokemon> GetPokemonInfo(string pokemonName)
         {
             try
             {
@@ -20,12 +20,12 @@ namespace Pokedex.Services
                 _httpClient.BaseAddress = new Uri($"https://pokeapi.co/api/v2/pokemon-species/{pokemonName.ToLower()}/");
 
                 // Call PokéAPI
-                var response = _httpClient.GetAsync(_httpClient.BaseAddress).Result;
+                var response = await _httpClient.GetAsync(_httpClient.BaseAddress);
 
                 if (response.IsSuccessStatusCode)
                 {
                     // Get response content as a JSON string
-                    var responseContent = response.Content.ReadAsStringAsync().Result;
+                    var responseContent = await response.Content.ReadAsStringAsync();
 
                     // Deserialize JSON string into Dynamic Object
                     var dynamicObject = JsonConvert.DeserializeObject<dynamic>(responseContent)!;

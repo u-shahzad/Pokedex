@@ -12,15 +12,15 @@ namespace Pokedex.Services.Tests
     public class TranslatorServiceTests
     {
         [TestMethod()]
-        public void GetTranslatedPokemonInfoTest()
+        public async void GetTranslatedPokemonInfoTest()
         {
             var httpClient = new HttpClient();
-            var _pokemonService = new PokemonService(httpClient);
+            var pokemonService = new PokemonService(httpClient);
 
-            var pokemon = _pokemonService.GetPokemonInfo("mewtwo");
+            var pokemon = await pokemonService.GetPokemonInfo("mewtwo");
 
-            TranslatorService _translatorService = new TranslatorService(new HttpClient());
-            pokemon = _translatorService.GetTranslatedPokemonInfo(pokemon);
+            TranslatorService translatorService = new TranslatorService(new HttpClient());
+            pokemon = await translatorService.GetTranslatedPokemonInfo(pokemon);
 
             // Assert
             Assert.IsNotNull(pokemon);

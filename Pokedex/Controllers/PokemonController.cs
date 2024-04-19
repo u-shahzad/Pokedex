@@ -8,31 +8,31 @@ namespace Pokedex.Controllers
     public class PokemonController : ControllerBase
     {
         [HttpGet("{pokemonName}")]
-        public IActionResult GetPokemonInfo(string pokemonName)
+        public async Task<IActionResult> GetPokemonInfo(string pokemonName)
         {
-            PokemonService _pokemonService = new PokemonService(new HttpClient());
-            Pokemon pokemon = _pokemonService.GetPokemonInfo(pokemonName);
+            PokemonService pokemonService = new PokemonService(new HttpClient());
+            Pokemon pokemon = await pokemonService.GetPokemonInfo(pokemonName);
 
             if (!String.IsNullOrEmpty(pokemon.Name))
                 return Ok(pokemon);
             else
-                return BadRequest("Pokemon not found");
+                return NotFound("Pokemon not found");
         }
 
         [HttpGet("translated/{pokemonName}")]
-        public IActionResult GetTranslatedPokemonInfo(string pokemonName)
+        public async Task<IActionResult> GetTranslatedPokemonInfo(string pokemonName)
         {
-            PokemonService _pokemonService = new PokemonService(new HttpClient());
-            Pokemon pokemon = _pokemonService.GetPokemonInfo(pokemonName);
+            PokemonService pokemonService = new PokemonService(new HttpClient());
+            Pokemon pokemon = await pokemonService.GetPokemonInfo(pokemonName);
 
             if (!String.IsNullOrEmpty(pokemon.Name))
             {
-                TranslatorService _translatorService = new TranslatorService(new HttpClient());
-                pokemon = _translatorService.GetTranslatedPokemonInfo(pokemon);
+                TranslatorService translatorService = new TranslatorService(new HttpClient());
+                pokemon = await translatorService.GetTranslatedPokemonInfo(pokemon);
                 return Ok(pokemon);
             }
             else
-                return BadRequest("Pokemon not found");
+                return NotFound("Pokemon not found");
         }
     }
 }
