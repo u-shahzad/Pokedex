@@ -14,37 +14,30 @@ namespace Pokedex.Services
 
         public async Task<Pokemon> GetTranslatedPokemonInfo(Pokemon pokemon)
         {
-            try
+            // Check if the Pokemon's habitat is a cave or if it is a legendary Pokemon, and apply Yoda's translation, otherwise apply Shakespeare's translation
+            var translator = pokemon.Habitat.ToLower() == "cave" || pokemon.IsLegendary ? "yoda" : "shakespeare";
+
+            _httpClient.BaseAddress = new Uri($"https://api.funtranslations.com/translate/{translator}.json?text={pokemon.Description}");
+
+            // Call FunTranslations API
+            var response = await _httpClient.GetAsync(_httpClient.BaseAddress);
+
+            response.EnsureSuccessStatusCode();
+
+            // Get response content as a JSON string
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            // Deserialize JSON string into Dynamic Object
+            var dynamicObject = JsonConvert.DeserializeObject<dynamic>(responseContent)!;
+
+            if (dynamicObject != null)
             {
-                // Check if the Pokemon's habitat is a cave or if it is a legendary Pokemon, and apply Yoda's translation, otherwise apply Shakespeare's translation
-                var translator = pokemon.Habitat.ToLower() == "cave" || pokemon.IsLegendary ? "yoda" : "shakespeare";
-
-                _httpClient.BaseAddress = new Uri($"https://api.funtranslations.com/translate/{translator}.json?text={pokemon.Description}");
-
-                // Call FunTranslations API
-                var response = await _httpClient.GetAsync(_httpClient.BaseAddress);
-
-                // Get response content as a JSON string
-                var responseContent = await response.Content.ReadAsStringAsync();
-
-                // Deserialize JSON string into Dynamic Object
-                var dynamicObject = JsonConvert.DeserializeObject<dynamic>(responseContent)!;
-
-                if (dynamicObject != null)
-                {
-                    // Get translated description
-                    if (dynamicObject.ContainsKey("contents") && dynamicObject.contents != null)
-                        pokemon.Description = dynamicObject.contents.translated ?? "";
-
-                    return pokemon;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
+                // Get translated description
+                if (dynamicObject.ContainsKey("contents") && dynamicObject.contents != null)
+                    pokemon.Description = dynamicObject.contents.translated ?? "";
             }
 
-            return new Pokemon();
+            return pokemon;
         }
     }
 }

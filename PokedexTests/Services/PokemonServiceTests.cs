@@ -13,7 +13,7 @@ namespace Pokedex.Services.Tests
     public class PokemonServiceTests
     {
         [TestMethod()]
-        public async void GetPokemonInfoTest()
+        public async Task GetPokemonInfo_ReturnsPokemonInfo()
         {
             var httpClient = new HttpClient();
             var pokemonService = new PokemonService(httpClient);
